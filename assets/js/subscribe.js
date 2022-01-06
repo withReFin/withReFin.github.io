@@ -1,6 +1,12 @@
+latestSubscribed = []
+emailField = document.getElementById("subemail")
+subscribeButton = document.getElementById("subscribe")
+subscribeButton.disabled = true
+
 function addEmail() {
+    const email = document.getElementById("subemail").value
     const data = {
-        'email': document.getElementById("subemail").value
+        'email': email
     }
     const url = 'https://g238fpy5tl.execute-api.ap-south-1.amazonaws.com/first/add-email'
     fetch(url, {
@@ -15,19 +21,24 @@ function addEmail() {
     })
     .then(response => response.text())
     .then(data => {
-        alert('Thanks for Subscribing!!')
+        subscribeButton.innerHTML = 'Subscribed'
+        latestSubscribed.push(email)
     })
     .catch(err => {
         alert('Error while subscribing!! Please try again.')
     })
 }
 
-emailField = document.getElementById("subemail")
 emailField.addEventListener('keyup', () => {
     const value = document.getElementById("subemail").value
     const valid = validateEmail(value)
-    document.getElementById("subemail").style.color = valid ? 'black' : 'red'
-    document.getElementById("subscribe").disabled = !valid;
+    emailField.style.color = valid ? 'black' : 'red'
+    subscribeButton.disabled = !valid || latestSubscribed.includes(value)
+    if(latestSubscribed.includes(value)) {
+        subscribeButton.innerHTML = 'Subscribed'
+    } else {
+        subscribeButton.innerHTML = 'Subscribe'
+    }
 })
 
 function validateEmail(input) {
